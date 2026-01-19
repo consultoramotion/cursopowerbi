@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta Comercial | Curso Power BI Profesional</title>
+    
+    <!-- FUENTES & LIBRERÍAS -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        primary: '#FF5000', /* Naranja Vibrante */
+                        secondary: '#252423', /* Dark Grey Original */
+                        dark: '#1a1a1a',
+                        light: '#f4eef7'
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.05)',
+                        'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        'glow-btn': '0 0 15px rgba(255, 80, 0, 0.5)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* === ESTILOS GLOBALES === */
+        body { 
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
+        ::-webkit-scrollbar-thumb { 
+            background-image: linear-gradient(180deg, #FF5000 0%, #252423 100%); 
+            border-radius: 4px; 
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Navegación Sidebar */
+        .nav-item { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border-left: 4px solid transparent; 
+        }
+        .nav-item:hover { transform: translateX(6px); }
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(255, 80, 0, 0.15) 0%, transparent 100%);
+            border-left: 4px solid #FF5000;
+            color: #cc4000;
+            font-weight: 800;
+        }
+        .dark .nav-item.active {
+            background: linear-gradient(90deg, rgba(255, 80, 0, 0.2) 0%, transparent 100%);
+            color: #FF5000;
+        }
+        .nav-item.active i { color: #FF5000; transform: scale(1.1); }
+        
+        /* Header decorativo */
+        .section-header { position: relative; display: inline-block; }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 6px;
+            background: linear-gradient(90deg, #FF5000, #252423);
+            border-radius: 3px;
+        }
+        
+        .tag-pill {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Listas personalizadas */
+        ul.custom-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        ul.custom-list li::before {
+            content: '•';
+            color: #FF5000;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        /* Modal Zoom */
+        #image-modal {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden selection:bg-primary selection:text-white font-sans text-gray-800 bg-[#f8fafc] dark:bg-[#0f172a] dark:text-gray-100">
+    
+    <!-- MODAL ZOOM -->
+    <div id="image-modal" class="fixed inset-0 z-[100] bg-black/90 hidden flex items-center justify-center p-4 transition-opacity duration-300" onclick="closeZoom()">
+        <div class="relative max-w-7xl max-h-full">
+            <button class="absolute -top-12 right-0 text-white hover:text-primary text-4xl font-bold focus:outline-none" onclick="closeZoom()">&times;</button>
+            <img id="modal-img" src="" alt="Zoom Imagen" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl border border-white/10 object-contain">
+        </div>
+    </div>
+    
+    <!-- PORTADA / PANTALLA DE INICIO -->
+    <div id="cover-screen" class="fixed inset-0 z-50 bg-[#1a1a1a] text-white flex flex-col items-center justify-center transition-transform duration-700 ease-in-out">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-[20%] left-[20%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+            <div class="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] bg-secondary/40 rounded-full blur-[100px] animate-pulse-slow" style="animation-delay: 1s;"></div>
+        </div>
+        
+        <div class="relative z-10 text-center max-w-4xl px-6 animate-slide-up flex flex-col items-center">
+            <!-- LOGO / BRANDING REEMPLAZADO -->
+            <div class="mb-12">
+                <img src="https://i.ibb.co/QjQ65ndK/14-ajustada.png" alt="Logo MOTION" class="h-24 md:h-32 object-contain filter brightness-110 drop-shadow-xl">
+            </div>
+            
+            <!-- BADGE -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-[10px] font-bold tracking-[0.2em] uppercase mb-8 text-primary shadow-lg">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+                Business Intelligence
+            </div>
+            
+            <!-- TÍTULO PRINCIPAL -->
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1]">
+                Análisis de datos<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-white to-primary">con Power BI</span>
+            </h1>
+            
+            <p class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Una formación completa diseñada para conectar, transformar, modelar y visualizar información crítica de negocio.
+            </p>
+            
+            <!-- BOTÓN DE ACCESO -->
+            <button onclick="enterReport()" class="group relative px-10 py-4 bg-primary text-white font-bold text-sm rounded-full shadow-glow-btn hover:shadow-[0_0_30px_rgba(255,80,0,0.6)] transition-all duration-300 transform hover:scale-105 active:scale-95">
+                <span class="flex items-center gap-3">
+                    VER PROGRAMA
+                    <i class="fa-solid fa-arrow-right-long text-white group-hover:translate-x-1 transition-transform duration-300"></i>
+                </span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="hidden lg:flex w-80 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex-col z-20 shadow-2xl shadow-gray-200/50 dark:shadow-none transition-colors duration-300">
+        <!-- Header del Sidebar -->
+        <div class="h-28 flex items-center justify-between px-6 border-b border-gray-100 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                    <i class="fa-solid fa-chart-simple"></i>
+                </div>
+                <div class="leading-tight">
+                    <span class="font-extrabold text-dark dark:text-white text-lg block tracking-tight">Power BI</span>
+                    <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">Curso Full</span>
+                </div>
+            </div>
+            
+            <!-- Botones de tema y home -->
+            <div class="flex gap-2">
+                <button onclick="showCover()" class="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors" title="Volver a Portada">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-primary hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors" title="Cambiar Tema">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Navegación -->
+        <nav class="flex-1 overflow-y-auto py-8 px-6 space-y-1">
+            <button onclick="showSection('inicio')" class="nav-item active w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 mb-2 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="inicio">
+                <i class="fa-solid fa-home w-5 text-center"></i> Resumen Ejecutivo
+            </button>
+            
+            <div class="pt-6 pb-2 px-4">
+                <p class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.15em] leading-tight">Módulos del Curso</p>
+            </div>
+            
+            <button onclick="showSection('mod1')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod1">
+                <span class="font-bold text-primary text-xs w-5 text-center">01</span> Introducción PBI
+            </button>
+            <button onclick="showSection('mod2')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod2">
+                <span class="font-bold text-primary text-xs w-5 text-center">02</span> Conexión Datos
+            </button>
+            <button onclick="showSection('mod3')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod3">
+                <span class="font-bold text-primary text-xs w-5 text-center">03</span> ETL Power Query
+            </button>
+            <button onclick="showSection('mod4')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod4">
+                <span class="font-bold text-primary text-xs w-5 text-center">04</span> Modelado Datos
+            </button>
+            <button onclick="showSection('mod5')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod5">
+                <span class="font-bold text-primary text-xs w-5 text-center">05</span> Visualizaciones
+            </button>
+            <button onclick="showSection('mod6')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod6">
+                <span class="font-bold text-primary text-xs w-5 text-center">06</span> Cálculos DAX
+            </button>
+            <button onclick="showSection('mod7')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod7">
+                <span class="font-bold text-primary text-xs w-5 text-center">07</span> PBI Service
+            </button>
+            <button onclick="showSection('mod8')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="mod8">
+                <span class="font-bold text-primary text-xs w-5 text-center">08</span> Conclusiones
+            </button>
+            
+            <div class="pt-6 pb-2 px-4">
+                <p class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.15em] leading-tight">Cierre</p>
+            </div>
+            
+            <button onclick="showSection('inversion')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors" data-target="inversion">
+                <i class="fa-solid fa-coins w-5 text-center"></i> Inversión
+            </button>
+        </nav>
+        
+        <!-- Footer del Sidebar -->
+        <div class="p-6 border-t border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/50">
+            <button onclick="window.location.href='mailto:info@tuempresa.com'" class="w-full flex items-center justify-center gap-3 bg-secondary dark:bg-slate-800 border-2 border-secondary dark:border-slate-600 text-white dark:text-gray-200 py-3.5 rounded-xl text-xs font-extrabold hover:bg-black hover:border-black dark:hover:bg-slate-700 transition-all uppercase tracking-wider group shadow-sm">
+                <i class="fa-regular fa-envelope text-lg group-hover:scale-110 transition-transform"></i> Contactar
+            </button>
+        </div>
+    </aside>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative transition-colors duration-300">
+        <!-- Header móvil -->
+        <header id="mobile-header" class="lg:hidden h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-gray-200 dark:border-slate-800 flex items-center justify-between px-6 z-20 sticky top-0 transition-colors duration-300">
+            <span class="font-bold text-dark dark:text-white text-sm">Power BI</span>
+            <div class="flex items-center gap-4">
+                <button onclick="showCover()" class="text-gray-600 dark:text-white p-2">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+                <button onclick="toggleTheme()" class="text-gray-600 dark:text-primary p-2">
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                </button>
+                <button onclick="toggleSidebar()" class="text-gray-600 dark:text-white p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Área de contenido con scroll -->
+        <div class="flex-1 overflow-y-auto scroll-smooth p-6 lg:p-16 pb-32 w-full max-w-[1920px] mx-auto" id="content-area">
+            
+            <!-- SECCIÓN INICIO (RESUMEN) -->
+            <section id="inicio" class="section-content animate-slide-up w-full max-w-7xl">
+                <div class="mb-12 pb-6 border-b border-gray-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                    <div>
+                        <span class="text-primary font-bold tracking-widest uppercase text-xs mb-2 block">Panorama General</span>
+                        <h2 class="text-4xl lg:text-5xl font-extrabold text-dark dark:text-white tracking-tight section-header">Resumen del Curso</h2>
+                        <p class="text-gray-500 dark:text-gray-400 mt-6 text-xl leading-relaxed max-w-3xl">
+                            Este programa capacita a los participantes para implementar soluciones completas de Microsoft Power BI, desde la extracción de datos crudos hasta la toma de decisiones estratégicas.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Cards de estadísticas -->
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="glass-panel p-8 rounded-2xl border-t-4 border-t-primary hover:-translate-y-1 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center mb-4 text-primary">
+                            <i class="fa-regular fa-clock text-xl"></i>
+                        </div>
+                        <h3 class="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Duración Total</h3>
+                        <p class="text-3xl font-extrabold text-dark dark:text-white mb-1">16 Horas</p>
+                        <p class="text-base text-gray-500 dark:text-gray-400">De formación intensiva</p>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl border-t-4 border-t-secondary hover:-translate-y-1 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4 text-secondary dark:text-white">
+                            <i class="fa-solid fa-layer-group text-xl"></i>
+                        </div>
+                        <h3 class="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Contenido</h3>
+                        <p class="text-3xl font-extrabold text-dark dark:text-white mb-1">8 Módulos</p>
+                        <p class="text-base text-gray-500 dark:text-gray-400">Teórico-Prácticos</p>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl border-t-4 border-t-blue-500 hover:-translate-y-1 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-4 text-blue-500 dark:text-blue-400">
+                            <i class="fa-solid fa-certificate text-xl"></i>
+                        </div>
+                        <h3 class="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Metodología</h3>
+                        <p class="text-3xl font-extrabold text-dark dark:text-white mb-1">Presencial</p>
+                    </div>
+                </div>
+                
+                <!-- FOOTER MOTION -->
+                <div class="mt-20 pt-10 border-t border-gray-200 dark:border-white/10">
+                    <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+                        <!-- Logo -->
+                        <div class="shrink-0">
+                            <img src="https://i.ibb.co/TxzdXMr2/m14nar-intermedia-PNG.png" alt="MOTION Logo" class="h-16 w-auto object-contain">
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="flex-1 text-center md:text-left space-y-3">
+                            
+                            <!-- Contact Data -->
+                            <div class="flex flex-col md:flex-row items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <a href="https://motion-co.com/" target="_blank" class="flex items-center gap-2 hover:text-primary transition-colors group">
+                                    <div class="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                                        <i class="fa-solid fa-globe text-xs text-primary"></i>
+                                    </div>
+                                    <span>www.motion-co.com</span>
+                                </a>
+                                
+                                <div class="hidden md:block w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                                
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                                        <i class="fa-solid fa-phone text-xs text-primary"></i>
+                                    </div>
+                                    <span>+54 911 34226794</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Tagline -->
+                            <p class="text-sm tracking-widest text-gray-400 font-medium italic pt-2">
+                                Lo único permanente es el movimiento
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 1 -->
+            <section id="mod1" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 1: Introducción a Power BI</h2>
+                        <span class="tag-pill bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300">1.5 Horas</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            ¿Qué es Power BI? ¿Cómo se vincula con el resto de la suite Power Platform? Casos de uso de la industria.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <div class="grid md:grid-cols-2 gap-x-12 gap-y-4">
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Contexto de Power Platform: Power BI, Power Apps, Power Automate</li>
+                                <li>Qué es Power BI</li>
+                                <li>Componentes de Power BI: Desktop, Service, Mobile</li>
+                            </ul>
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Arquitectura y licenciamiento: Free, Pro, Premium</li>
+                                <li>Casos de uso por industria: retail, finanzas, manufactura, salud</li>
+                                <li>Instalación y exploración de la interfaz</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 2 -->
+            <section id="mod2" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 2: Conexión a Orígenes de datos</h2>
+                        <span class="tag-pill bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300">1.5 Horas</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            Evaluar diferentes tipos de orígenes de datos, desde archivos Excel hasta bases de datos empresariales y servicios en la nube.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <div class="grid md:grid-cols-2 gap-x-12 gap-y-4">
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Tipos de orígenes: archivos, bases de datos, servicios en línea, APIs</li>
+                                <li>Modos de conectividad: Import, DirectQuery, Live Connection</li>
+                                <li>Conexión a Excel y archivos locales</li>
+                            </ul>
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Conexión a SQL Server y bases de datos relacionales</li>
+                                <li>Conexión a listas de SharePoint</li>
+                                <li>Conexión a carpetas de archivos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 3 -->
+            <section id="mod3" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 3: Transformación en Power Query</h2>
+                        <span class="tag-pill bg-primary text-white font-bold">4 Horas</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8 border-t-4 border-t-primary">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            Power Query es el motor ETL que permite limpiar, transformar y preparar datos de forma reproducible usando el lenguaje M. Dominar estas técnicas es fundamental.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <div class="grid md:grid-cols-2 gap-x-12 gap-y-4 mb-6">
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Interfaz de Power Query Editor: paneles, pasos aplicados, tipos de datos</li>
+                                <li>Transformaciones básicas: filtrado, eliminación, reordenamiento de columnas</li>
+                                <li>Transformaciones de formato: texto, números, fechas</li>
+                                <li>Operaciones avanzadas: split, merge, pivot/unpivot</li>
+                                <li>Columnas condicionales y personalizadas con lenguaje M</li>
+                            </ul>
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Combinar consultas: merge (joins) y append (uniones)</li>
+                                <li>Tipos de joins: inner, left, right, full outer, anti</li>
+                                <li>Agrupación y agregación de datos</li>
+                                <li>Parámetros y funciones personalizadas</li>
+                                <li>Query folding y optimización de rendimiento</li>
+                                <li>Mejores prácticas: organización, documentación, eficiencia</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 4 -->
+            <section id="mod4" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 4: Diseño del modelo de datos</h2>
+                        <span class="tag-pill bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300">1.5 Horas</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            El modelo de datos es el núcleo de Power BI que determina el rendimiento y funcionalidad. Un diseño óptimo sigue principios de modelado dimensional.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                            <li>Conceptos: tablas de hechos vs dimensiones, esquema estrella</li>
+                            <li>Configuración de relaciones: cardinalidad, direccionalidad de filtros</li>
+                            <li>Relaciones activas e inactivas</li>
+                            <li>Tabla calendario: creación y configuración como tabla de fechas</li>
+                            <li>Mejores prácticas de modelado</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 5 -->
+            <section id="mod5" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 5: Visualizaciones y Tableros</h2>
+                        <span class="tag-pill bg-primary text-white font-bold">4 Horas</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8 border-t-4 border-t-primary">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            Creación de gráficos, tarjetas, segmentadores y reportes interactivos para facilitar el análisis y la toma de decisiones estratégicas.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <div class="grid md:grid-cols-2 gap-x-12 gap-y-4">
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Tipos de visualizaciones: tablas, matrices, barras, líneas, mapas, KPIs</li>
+                                <li>Configuración de campos: ejes, valores, leyendas, tooltips</li>
+                                <li>Formato y personalización: colores, títulos, etiquetas, temas</li>
+                                <li>Segmentaciones y filtros: configuración y sincronización</li>
+                            </ul>
+                            <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                                <li>Interactividad: drill-down, drill-through, filtrado cruzado</li>
+                                <li>Bookmarks y botones para navegación</li>
+                                <li>Diseño de página: alineación, distribución, mobile layout</li>
+                                <li>Buenas prácticas para dashboards ejecutivos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 6 -->
+            <section id="mod6" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 6: Cálculos con DAX</h2>
+                        <span class="tag-pill bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300">2 Horas</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            DAX (Data Analysis Expressions) es el lenguaje de fórmulas que permite crear medidas y cálculos avanzados como comparaciones temporales y rankings.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                            <li>Medidas, columnas, tablas calculadas</li>
+                            <li>Contexto de fila y contexto de filtro</li>
+                            <li>Funciones de agregación, filtro, relación, reglas lógicas</li>
+                            <li>CALCULATE: modificación del contexto de filtro</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 7 -->
+            <section id="mod7" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 7: Power BI Service</h2>
+                        <span class="tag-pill bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300">1 Hora</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            Power BI Service es la plataforma en la nube para publicar, compartir y consumir informes. Se aprende el proceso completo de despliegue.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                            <li>Publicación desde Desktop a Service</li>
+                            <li>Espacios de trabajo: roles y permisos</li>
+                            <li>Actualización de datos: manual y programada</li>
+                            <li>Creación de paneles: anclar visualizaciones</li>
+                            <li>Q&A: preguntas en lenguaje natural</li>
+                            <li>Monitoreo de uso y métricas</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MÓDULO 8 -->
+            <section id="mod8" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="max-w-5xl">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark dark:text-white">Módulo 8: Conclusiones</h2>
+                        <span class="tag-pill bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300">0.5 Horas</span>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-2xl mb-8">
+                        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 border-b border-gray-100 dark:border-slate-800 pb-6">
+                            Consolidación de conceptos clave y orientación sobre próximos pasos para continuar desarrollando habilidades en Power BI.
+                        </p>
+                        
+                        <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Temario Detallado</h4>
+                        <ul class="custom-list text-gray-600 dark:text-gray-400 text-sm space-y-3">
+                            <li>Resumen del flujo completo: conectar, transformar, modelar, visualizar, publicar</li>
+                            <li>Resumen de buenas prácticas</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- SECCIÓN INVERSIÓN (RESUMEN FINAL) -->
+            <section id="inversion" class="section-content hidden animate-slide-up w-full max-w-7xl">
+                <div class="mb-12 pb-6 border-b border-gray-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                    <div>
+                        <span class="text-primary font-bold tracking-widest uppercase text-xs mb-2 block">Detalle Final</span>
+                        <h2 class="text-4xl lg:text-5xl font-extrabold text-dark dark:text-white tracking-tight section-header">Resumen y Valor</h2>
+                        <p class="text-gray-500 dark:text-gray-400 mt-6 text-xl leading-relaxed max-w-3xl">
+                            Consolidado de la carga horaria por módulo y propuesta de inversión para la capacitación.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Tabla de Módulos -->
+                <div class="glass-panel p-8 rounded-3xl mb-12 overflow-hidden">
+                    <h3 class="text-2xl font-extrabold text-dark dark:text-white mb-6">Plan de Estudios</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-200 dark:border-slate-700 text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                                    <th class="py-4 px-4 font-bold">Módulo</th>
+                                    <th class="py-4 px-4 font-bold">Contenido</th>
+                                    <th class="py-4 px-4 font-bold text-right">Duración</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-gray-600 dark:text-gray-300">
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">01</td>
+                                    <td class="py-4 px-4">Introducción a Power BI: Contexto, arquitectura y licenciamiento</td>
+                                    <td class="py-4 px-4 text-right font-bold">1.5h</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">02</td>
+                                    <td class="py-4 px-4">Conexión a Orígenes de datos: Tipos, modos y conexiones</td>
+                                    <td class="py-4 px-4 text-right font-bold">1.5h</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">03</td>
+                                    <td class="py-4 px-4">Transformación en Power Query: ETL, lenguaje M y optimización</td>
+                                    <td class="py-4 px-4 text-right font-bold">4h</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">04</td>
+                                    <td class="py-4 px-4">Diseño del modelo de datos: Esquema estrella y relaciones</td>
+                                    <td class="py-4 px-4 text-right font-bold">1.5h</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">05</td>
+                                    <td class="py-4 px-4">Visualizaciones y tableros: Gráficos, interactividad y diseño</td>
+                                    <td class="py-4 px-4 text-right font-bold">4h</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">06</td>
+                                    <td class="py-4 px-4">Cálculos con DAX: Medidas, columnas y contextos</td>
+                                    <td class="py-4 px-4 text-right font-bold">2h</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">07</td>
+                                    <td class="py-4 px-4">Power BI Service: Publicación, espacios de trabajo y Q&A</td>
+                                    <td class="py-4 px-4 text-right font-bold">1h</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-primary">08</td>
+                                    <td class="py-4 px-4">Conclusiones: Resumen y cierre</td>
+                                    <td class="py-4 px-4 text-right font-bold">0.5h</td>
+                                </tr>
+                                <tr class="bg-gray-100 dark:bg-slate-800">
+                                    <td class="py-4 px-4"></td>
+                                    <td class="py-4 px-4 font-extrabold text-right uppercase tracking-wider text-xs">Total Horas</td>
+                                    <td class="py-4 px-4 text-right font-black text-lg text-primary">16h</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Detalle de Inversión -->
+                <div class="glass-panel p-8 md:p-12 rounded-3xl border-t-8 border-t-primary text-center relative overflow-hidden group hover:shadow-card-hover transition-all">
+                    <div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10">
+                        <span class="inline-block py-1 px-4 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-widest mb-6">
+                            Propuesta Económica
+                        </span>
+                        <h3 class="text-3xl md:text-4xl font-extrabold text-dark dark:text-white mb-8">Valor del Curso</h3>
+                        
+                        <div class="inline-block bg-dark dark:bg-white text-white dark:text-dark py-6 px-10 rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
+                            <div class="text-4xl md:text-5xl font-black tracking-tight">
+                                $2.200.000 <span class="text-lg font-bold opacity-70">+ IVA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            
+        </div>
+    </main>
+    
+    <!-- JAVASCRIPT -->
+    <script>
+        // Inicialización del tema
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // Toggle de tema
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+        
+        // Transición de portada
+        function enterReport() {
+            const cover = document.getElementById('cover-screen');
+            cover.style.opacity = '0';
+            cover.style.transform = 'translateY(-100%)';
+            setTimeout(() => { cover.style.display = 'none'; }, 700);
+        }
+        
+        // Mostrar portada
+        function showCover() {
+            const cover = document.getElementById('cover-screen');
+            cover.style.display = 'flex';
+            setTimeout(() => {
+                cover.style.opacity = '1';
+                cover.style.transform = 'translateY(0)';
+            }, 10);
+        }
+        
+        // Toggle sidebar en móvil
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('inset-0');
+            sidebar.classList.toggle('z-50');
+            sidebar.classList.toggle('w-full');
+            if(!sidebar.classList.contains('hidden')) sidebar.style.display = 'flex';
+            else sidebar.style.display = '';
+        }
+        
+        // Modal de zoom
+        function openZoom(src) {
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img');
+            img.src = src;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeZoom() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        // Navegación entre secciones
+        function showSection(id) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('animate-slide-up');
+            });
+            
+            // Mostrar la sección seleccionada
+            const target = document.getElementById(id);
+            if(target) {
+                target.classList.remove('hidden');
+                void target.offsetWidth; 
+                target.classList.add('animate-slide-up');
+                document.getElementById('content-area').scrollTop = 0;
+            }
+            
+            // Actualizar navegación activa
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const activeBtn = document.querySelector(`button[data-target="${id}"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+            
+            // Cerrar sidebar en móvil después de seleccionar
+            if(window.innerWidth < 1024) {
+                const sidebar = document.getElementById('sidebar');
+                if(!sidebar.classList.contains('hidden')) toggleSidebar();
+            }
+        }
+    </script>
+</body>
+</html>
